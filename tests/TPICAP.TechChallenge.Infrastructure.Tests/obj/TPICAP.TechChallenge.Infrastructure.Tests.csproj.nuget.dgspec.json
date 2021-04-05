@@ -1,0 +1,313 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\tests\\TPICAP.TechChallenge.Infrastructure.Tests\\TPICAP.TechChallenge.Infrastructure.Tests.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Data\\TPICAP.TechChallenge.Data.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Data\\TPICAP.TechChallenge.Data.csproj",
+        "projectName": "TPICAP.TechChallenge.Data",
+        "projectPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Data\\TPICAP.TechChallenge.Data.csproj",
+        "packagesPath": "C:\\Users\\shafr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Data\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\shafr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Bogus": {
+              "target": "Package",
+              "version": "[33.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.4, )"
+            },
+            "SQLitePCLRaw.lib.e_sqlite3": {
+              "target": "Package",
+              "version": "[2.0.4, )"
+            },
+            "SQLitePCLRaw.lib.e_sqlite3.v110_xp": {
+              "target": "Package",
+              "version": "[1.1.14, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Infrastructure\\TPICAP.TechChallenge.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Infrastructure\\TPICAP.TechChallenge.Infrastructure.csproj",
+        "projectName": "TPICAP.TechChallenge.Infrastructure",
+        "projectPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Infrastructure\\TPICAP.TechChallenge.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\shafr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\shafr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Data\\TPICAP.TechChallenge.Data.csproj": {
+                "projectPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Data\\TPICAP.TechChallenge.Data.csproj"
+              },
+              "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Model\\TPICAP.TechChallenge.Model.csproj": {
+                "projectPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Model\\TPICAP.TechChallenge.Model.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Model\\TPICAP.TechChallenge.Model.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Model\\TPICAP.TechChallenge.Model.csproj",
+        "projectName": "TPICAP.TechChallenge.Model",
+        "projectPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Model\\TPICAP.TechChallenge.Model.csproj",
+        "packagesPath": "C:\\Users\\shafr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Model\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\shafr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\tests\\TPICAP.TechChallenge.Infrastructure.Tests\\TPICAP.TechChallenge.Infrastructure.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\tests\\TPICAP.TechChallenge.Infrastructure.Tests\\TPICAP.TechChallenge.Infrastructure.Tests.csproj",
+        "projectName": "TPICAP.TechChallenge.Infrastructure.Tests",
+        "projectPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\tests\\TPICAP.TechChallenge.Infrastructure.Tests\\TPICAP.TechChallenge.Infrastructure.Tests.csproj",
+        "packagesPath": "C:\\Users\\shafr\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\tests\\TPICAP.TechChallenge.Infrastructure.Tests\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\shafr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Data\\TPICAP.TechChallenge.Data.csproj": {
+                "projectPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Data\\TPICAP.TechChallenge.Data.csproj"
+              },
+              "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Infrastructure\\TPICAP.TechChallenge.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Infrastructure\\TPICAP.TechChallenge.Infrastructure.csproj"
+              },
+              "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Model\\TPICAP.TechChallenge.Model.csproj": {
+                "projectPath": "C:\\Users\\shafr\\source\\repos\\TPICAP.TechChallenge\\src\\TPICAP.TechChallenge.Model\\TPICAP.TechChallenge.Model.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Bogus": {
+              "target": "Package",
+              "version": "[33.0.2, )"
+            },
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[5.10.3, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[16.7.1, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.16.1, )"
+            },
+            "coverlet.collector": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.3.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

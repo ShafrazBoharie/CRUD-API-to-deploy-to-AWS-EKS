@@ -1,0 +1,9 @@
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\bin\Debug\netstandard2.0\TPICAP.TechChallenge.Model.deps.json
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\bin\Debug\netstandard2.0\TPICAP.TechChallenge.Model.dll
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\bin\Debug\netstandard2.0\TPICAP.TechChallenge.Model.pdb
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\netstandard2.0\TPICAP.TechChallenge.Model.csprojAssemblyReference.cache
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\netstandard2.0\TPICAP.TechChallenge.Model.AssemblyInfoInputs.cache
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\netstandard2.0\TPICAP.TechChallenge.Model.AssemblyInfo.cs
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\netstandard2.0\TPICAP.TechChallenge.Model.csproj.CoreCompileInputs.cache
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\netstandard2.0\TPICAP.TechChallenge.Model.dll
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\netstandard2.0\TPICAP.TechChallenge.Model.pdb
