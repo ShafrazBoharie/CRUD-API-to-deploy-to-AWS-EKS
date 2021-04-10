@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TPICAP.TechChallenge.Infrastructure.Helpers;
 using TPICAP.TechChallenge.Infrastructure.Models;
 using TPICAP.TechChallenge.Model.Models;
 
@@ -57,77 +56,41 @@ namespace TPICAP.TechChallenge.Infrastructure.Services
             return links;
         }
 
-        public IEnumerable<LinkDto> CreateLinksForPersons(Func<string, object, string> urlLink,
+        public IEnumerable<LinkDto> CreateLinksForPersonsCollection(Func<string, object, string> urlLink,
             PersonsResourceParameters personsResourceParameters, bool hasNext, bool hasPrevious)
         {
+            var baseUrl = urlLink("GetPersons", null);
+
             var links = new List<LinkDto>();
 
             links.Add(
                 new LinkDto
                 {
-                    Href = CreatePersonsResourceUri(urlLink, personsResourceParameters, ResourceUriType.Current),
+                    Href =
+                        $"{baseUrl}?pageSize={personsResourceParameters.PageSize}&pageNumber={personsResourceParameters.PageNumber}",
                     Rel = "self",
                     Method = "GET"
                 });
 
             if (hasNext)
-                new LinkDto
+                links.Add(new LinkDto
                 {
-                    Href = CreatePersonsResourceUri(urlLink, personsResourceParameters, ResourceUriType.NextPage),
+                    Href =
+                        $"{baseUrl}?pageSize={personsResourceParameters.PageSize}&pageNumber={personsResourceParameters.PageNumber + 1}",
                     Rel = "nextPage",
                     Method = "GET"
-                };
+                });
 
             if (hasPrevious)
-                new LinkDto
+                links.Add(new LinkDto
                 {
-                    Href = CreatePersonsResourceUri(urlLink, personsResourceParameters, ResourceUriType.PreviousPage),
+                    Href =
+                        $"{baseUrl}?pageSize={personsResourceParameters.PageSize}&pageNumber={personsResourceParameters.PageNumber-1}",
                     Rel = "previousPage",
                     Method = "GET"
-                };
+                });
 
             return links;
-        }
-
-
-        private string CreatePersonsResourceUri(Func<string, object, string> urlLink,
-            PersonsResourceParameters personsResourceParameters,
-            ResourceUriType type)
-        {
-            switch (type)
-            {
-                case ResourceUriType.PreviousPage:
-                    return urlLink("GetPersons",
-                        new
-                        {
-                            fields = personsResourceParameters.Fields,
-                            orderBy = personsResourceParameters.OrderBy,
-                            pageNumber = personsResourceParameters.PageNumber - 1,
-                            pageSize = personsResourceParameters.PageSize,
-                            searchQuery = personsResourceParameters.SearchQuery
-                        });
-                case ResourceUriType.NextPage:
-                    return urlLink("GetPersons",
-                        new
-                        {
-                            fields = personsResourceParameters.Fields,
-                            orderBy = personsResourceParameters.OrderBy,
-                            pageNumber = personsResourceParameters.PageNumber + 1,
-                            pageSize = personsResourceParameters.PageSize,
-                            searchQuery = personsResourceParameters.SearchQuery
-                        });
-                case ResourceUriType.Current:
-                default:
-                    return urlLink("GetPersons",
-                        new
-                        {
-                            fields = personsResourceParameters.Fields,
-                            orderBy = personsResourceParameters.OrderBy,
-                            pageNumber = personsResourceParameters.PageNumber,
-                            pageSize = personsResourceParameters.PageSize,
-                            searchQuery = personsResourceParameters.SearchQuery
-                        });
-            }
         }
     }
 }

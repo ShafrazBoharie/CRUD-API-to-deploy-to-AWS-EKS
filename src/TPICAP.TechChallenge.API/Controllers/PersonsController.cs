@@ -46,7 +46,7 @@ namespace TPICAP.TechChallenge.API.Controllers
             Response.Headers.Add("X-Pagination",
                 JsonSerializer.Serialize(paginationMetadata));
 
-            var links = _hateoasLinksCreator.CreateLinksForPersons(Url.Link, personsResourceParameters,
+            var links = _hateoasLinksCreator.CreateLinksForPersonsCollection(Url.Link, personsResourceParameters,
                 persons.HasNext,
                 persons.HasPrevious);
 

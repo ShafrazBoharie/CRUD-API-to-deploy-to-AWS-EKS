@@ -23,9 +23,7 @@ namespace TPICAP.TechChallenge.Infrastructure.Extensions
 
                 foreach (var propertyInfo in propertyInfos)
                 {
-
                     var propertyValue = propertyInfo.GetValue(source);
-
 
                     ((IDictionary<string, object>) dataShapedObject)
                         .Add(propertyInfo.Name, propertyValue);
