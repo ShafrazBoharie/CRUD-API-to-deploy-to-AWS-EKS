@@ -1,0 +1,17 @@
+.exe
+/build/
+*.suo
+*.user
+_ReSharper.*/
+*.sdf
+bin/
+obj/
+Debug/
+Release/
+*.opensdf
+*.tlog
+*.log
+*/bin/*
+*/obj/*
+
+
