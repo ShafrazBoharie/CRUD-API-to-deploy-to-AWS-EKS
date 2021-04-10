@@ -163,3 +163,5 @@ C:\Users\shafr\source\repos\TPICAP.TechChallenge\tests\TPICAP.TechChallenge.API.
 C:\Users\shafr\source\repos\TPICAP.TechChallenge\tests\TPICAP.TechChallenge.API.Tests\obj\Debug\net5.0\ref\TPICAP.TechChallenge.API.Tests.dll
 C:\Users\shafr\source\repos\TPICAP.TechChallenge\tests\TPICAP.TechChallenge.API.Tests\obj\Debug\net5.0\TPICAP.TechChallenge.API.Tests.pdb
 C:\Users\shafr\source\repos\TPICAP.TechChallenge\tests\TPICAP.TechChallenge.API.Tests\obj\Debug\net5.0\TPICAP.TechChallenge.API.Tests.genruntimeconfig.cache
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\tests\TPICAP.TechChallenge.API.Tests\bin\Debug\net5.0\Microsoft.AspNetCore.TestHost.dll
+C:\Users\shafr\source\repos\TPICAP.TechChallenge\tests\TPICAP.TechChallenge.API.Tests\bin\Debug\net5.0\System.IO.Pipelines.dll
