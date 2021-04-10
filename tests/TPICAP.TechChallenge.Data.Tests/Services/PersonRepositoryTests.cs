@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using TPICAP.TechChallenge.Data.Entities;
@@ -33,45 +34,48 @@ namespace TPICAP.TechChallenge.Data.Tests.Services
         }
 
         [Fact]
-        public void GivenThePersonsTableIsEmpty_Should_Return_EmptyCollectionOfPersons()
+        public async Task GivenThePersonsTableIsEmpty_Should_Return_EmptyCollectionOfPersons()
         {
             DeleteAllPersonsRecords();
 
-            _sut.GetPersons(1, 1, true).Should().BeEmpty();
+            var result = await _sut.GetPersons(1, 1, true);
+                
+            result.Should().BeEmpty();
         }
 
         [Fact]
-        public void GivenPersonsTableHasRecords_Should_Return_PersonsCollection()
+        public async Task GivenPersonsTableHasRecords_Should_Return_PersonsCollection()
         {
             var numberOfTests = 3;
             AddTestPersonsToDatabase(_context, numberOfTests);
 
             var personsCountInDatabase = _context.People.Count();
 
-            var persons = _sut.GetPersons(1, 1, true);
+            var persons =await  _sut.GetPersons(1, 1, true);
 
+            var result = 
             persons.Count().Should().Be(personsCountInDatabase);
         }
 
 
         [Fact]
-        public void GivenPersonTableHasRecords_WithValidPersonId_ShouldReturn_Person()
+        public async Task GivenPersonTableHasRecords_WithValidPersonId_ShouldReturn_Person()
         {
             AddTestPersonsToDatabase(_context, 1);
             var expectedPersonId = _context.People.FirstOrDefault().Id;
 
-            var result = _sut.GetPerson(expectedPersonId);
+            var result = await _sut.GetPerson(expectedPersonId);
 
             result.Id.Should().Be(expectedPersonId);
         }
 
         [Theory]
         [InlineData(9999)]
-        public void GivenPersonTableHasRecords_WhenPersonId_NotExist_ShouldReturn_Null(int expectedPersonId)
+        public async Task GivenPersonTableHasRecords_WhenPersonId_NotExist_ShouldReturn_Null(int expectedPersonId)
         {
             AddTestPersonsToDatabase(_context, 1);
 
-            var result = _sut.GetPerson(expectedPersonId);
+            var result = await _sut.GetPerson(expectedPersonId);
 
             result.Should().BeNull();
         }
@@ -80,34 +84,31 @@ namespace TPICAP.TechChallenge.Data.Tests.Services
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void GivenPersonTableHasRecords_WithInValidPersonId_ShouldReturn_Null(int expectedPersonId)
+        public async Task GivenPersonTableHasRecords_WithInValidPersonId_ShouldReturn_Null(int expectedPersonId)
         {
             AddTestPersonsToDatabase(_context, 1);
-            _sut.Invoking(x => x.GetPerson(expectedPersonId)).Should().Throw<ArgumentNullException>();
+             await _sut.Invoking(x =>x.GetPerson(expectedPersonId)).Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
-        public void GivenPersonToBeAdded_Is_Null_Should_Throw_ArgumentNullException()
+        public async Task GivenPersonToBeAdded_Is_Null_Should_Throw_ArgumentNullException()
         {
-            _sut.Invoking(x => x.AddPerson(null)).Should().Throw<ArgumentNullException>();
+            await _sut.Invoking(x => x.AddPerson(null)).Should().ThrowAsync<ArgumentNullException>();
         }
 
 
         [Fact]
-        public void GivenPersonToBeAdded_IsValid_Should_InsertThePerson_ToTheDatabase()
+        public async Task GivenPersonToBeAdded_IsValid_Should_InsertThePerson_ToTheDatabase()
         {
             var person = GeneratePersons(1).First();
 
-            _sut.AddPerson(person);
-            var result = _sut.Save();
+            var result = await _sut.AddPerson(person);
 
-            var insertedPerson = _context.People.FirstOrDefault(x => x.DateOfBirth == person.DateOfBirth
+            var insertedPerson = await _context.People.FirstOrDefaultAsync(x => x.DateOfBirth == person.DateOfBirth
                                                                      && x.FirstName == person.FirstName &&
                                                                      x.LastName == person.LastName &&
                                                                      x.Salutation.Equals(person.Salutation));
-
-            result.Should().BeTrue();
-            insertedPerson.Should().NotBeNull();
+            result.Should().BeEquivalentTo(insertedPerson);
         }
 
 
@@ -118,15 +119,13 @@ namespace TPICAP.TechChallenge.Data.Tests.Services
         }
 
         [Fact]
-        public void GivenThePersonObjectIsAvailable_WhenDeletingThePerson_ShouldDeleteThePersonSuccessfully()
+        public async Task GivenThePersonObjectIsAvailable_WhenDeletingThePerson_ShouldDeleteThePersonSuccessfully()
         {
             var person = GeneratePersons(1).First();
 
-            _sut.AddPerson(person);
-            var result = _sut.Save();
+            await _sut.AddPerson(person);
 
-            _sut.DeletePerson(person);
-            _sut.Save();
+            await _sut.DeletePerson(person);
 
             _context.People.FirstOrDefault(x => x.Id == person.Id).Should().BeNull();
         }
@@ -134,52 +133,53 @@ namespace TPICAP.TechChallenge.Data.Tests.Services
         [Theory]
         [InlineData("NewFirstName")]
         [InlineData("XYZ")]
-        public void GivenNewPersonData_WhenUpdatingThePerson_ShouldUpdatedOnTheDatabase(string firstName)
+        public async Task GivenNewPersonData_WhenUpdatingThePerson_ShouldUpdatedOnTheDatabase(string firstName)
         {
             var person = GeneratePersons(1).First();
-            _sut.AddPerson(person);
-            _sut.Save();
+            await _sut.AddPerson(person);
 
             person.FirstName = firstName;
-            _sut.UpdatePerson(person);
-            var result = _sut.Save();
+            var result = await _sut.UpdatePerson(person);
 
-            result.Should().BeTrue();
-            _context.People.FirstOrDefault(x => x.Id == person.Id).FirstName.Should().Be(firstName);
+            var personInDB = _context.People.FirstOrDefault(x => x.Id == person.Id);
+
+            personInDB.FirstName.Should().Be(firstName);
+            result.Should().BeEquivalentTo(personInDB);
         }
 
         [Fact]
-        public void GivenPersonId_WhenCheckingFOrPersonIsExist_Shouldreturn_True()
+        public async Task GivenPersonId_WhenCheckingFOrPersonIsExist_Shouldreturn_True()
         {
             var person = GeneratePersons(1).First();
-            _sut.AddPerson(person);
-            _sut.Save();
+            await _sut.AddPerson(person);
 
-            _sut.PersonExist(person.Id).Should().BeTrue();
+            var result = await _sut.PersonExist(person.Id);
+            result.Should().BeTrue();
         }
 
         [Theory]
         [InlineData(999)]
-        public void GivenInvalidPersonId_WhenCheckingFOrPersonIsExist_Shouldreturn_False(int personId)
+        public async Task GivenInvalidPersonId_WhenCheckingFOrPersonIsExist_Shouldreturn_False(int personId)
         {
-            _sut.PersonExist(personId).Should().BeFalse();
+            var result = await _sut.PersonExist(personId);
+            result.Should().BeFalse();
         }
 
         [Fact]
-        public void GivenPersonIsExist_WhenCheckingFOrPersonIsExist_Shouldreturn_True()
+        public async Task GivenPersonIsExist_WhenCheckingFOrPersonIsExist_Shouldreturn_True()
         {
             var person = GeneratePersons(1).First();
-            _sut.AddPerson(person);
-            _sut.Save();
+            await _sut.AddPerson(person);
 
-            _sut.PersonExist(person).Should().BeTrue();
+            var result = await _sut.PersonExist(person);
+            result.Should().BeTrue();
         }
 
 
         [Fact]
-        public void GivenNullPerson_WhenCheckingFOrPersonIsExist_Shouldreturn_False()
+        public async Task GivenNullPerson_WhenCheckingFOrPersonIsExist_Shouldreturn_False()
         {
-            _sut.Invoking(x => x.PersonExist(null)).Should().Throw<ArgumentNullException>();
+           await _sut.Invoking(x => x.PersonExist(null)).Should().ThrowAsync<ArgumentNullException>();
         }
 
 
@@ -204,7 +204,6 @@ namespace TPICAP.TechChallenge.Data.Tests.Services
             var salutations = _context.Salutations.ToList();
 
             return new Bogus.Faker<Person>()
-                //  .RuleFor(x => x.SalutationId, context.People.Any() ? context.People.Max(m => m.SalutationId) + 1 : 1)
                 .RuleFor(x => x.FirstName, x => x.Person.FirstName)
                 .RuleFor(x => x.LastName, x => x.Person.LastName)
                 .RuleFor(x => x.DateOfBirth, x => x.Person.DateOfBirth)

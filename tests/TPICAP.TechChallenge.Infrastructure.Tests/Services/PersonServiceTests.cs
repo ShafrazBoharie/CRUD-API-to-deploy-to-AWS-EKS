@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Bogus;
 using FluentAssertions;
 using Moq;
@@ -27,99 +28,100 @@ namespace TPICAP.TechChallenge.Infrastructure.Tests.Services
             ConfigureSalutationRepositoryMock();
 
             _personRepository = new Mock<IPersonRepository>();
-            var _personEntityToPersonDtoMapper = new PersonEntityToPersonDtoMapper();
-            var _personCreationDtoToPersonEntityMapper =
+            var personEntityToPersonDtoMapper = new PersonEntityToPersonDtoMapper();
+            var personCreationDtoToPersonEntityMapper =
                 new PersonCreationDtoToPersonEntityMapper(_salutationRepository.Object);
-            var _personUpdateDtoToPersonEntityMapper =
+            var personUpdateDtoToPersonEntityMapper =
                 new PersonUpdateDtoToPersonEntityMapper(_salutationRepository.Object);
 
-            _sut = new PersonService(_personRepository.Object, _personEntityToPersonDtoMapper,
-                _personCreationDtoToPersonEntityMapper, _personUpdateDtoToPersonEntityMapper);
+            _sut = new PersonService(_personRepository.Object, personEntityToPersonDtoMapper,
+                personCreationDtoToPersonEntityMapper, personUpdateDtoToPersonEntityMapper);
         }
 
         private void ConfigureSalutationRepositoryMock()
         {
             _salutationRepository.Setup(x => x.GetSalutationByName("Mr"))
-                .Returns(new Salutation {SalutationId = 1, SalutationName = "Mr"});
+                .ReturnsAsync(new Salutation {SalutationId = 1, SalutationName = "Mr"});
         }
 
         [Fact]
-        public void WhenPersonIsAvailableInTheDatabase_ShouldReturnPersonsCollection()
+        public async Task WhenPersonIsAvailableInTheDatabase_ShouldReturnPersonsCollection()
         {
             _personRepository
                 .Setup(x => x.GetPersons(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string>(),
-                    It.IsAny<string>())).Returns(GeneratePersons());
+                    It.IsAny<string>())).ReturnsAsync(GeneratePersons());
 
-            var results = _sut.GetPersons(new PersonsResourceParameters());
+            var results = await _sut.GetPersons(new PersonsResourceParameters());
 
             results.Count().Should().Be(3);
         }
 
         [Fact]
-        public void WhenPersonsNotAvailableInTheDatabase_ShouldReturnEmptyCollection()
+        public async Task WhenPersonsNotAvailableInTheDatabase_ShouldReturnEmptyCollection()
         {
             var personsResourceParameters = new PersonsResourceParameters
                 {PageSize = 10, OrderBy = "Firstname", PageNumber = 1};
-            var results = _sut.GetPersons(personsResourceParameters);
+            var results = await _sut.GetPersons(personsResourceParameters);
 
             results.Count().Should().Be(0);
         }
 
         [Fact]
-        public void WhenPersonIdIsExistInTheDatabase_ShouldReturnPersonDto()
+        public async Task WhenPersonIdIsExistInTheDatabase_ShouldReturnPersonDto()
         {
             var personEntityToReturn = GeneratePersons().First();
-            _personRepository.Setup(x => x.GetPerson(It.IsAny<int>())).Returns(personEntityToReturn);
+            _personRepository.Setup(x => x.GetPerson(It.IsAny<int>())).ReturnsAsync(personEntityToReturn);
             var personIdtoRetrieve = personEntityToReturn.Id;
 
-            var results = _sut.GetPerson(personIdtoRetrieve, "");
+            var results = await _sut.GetPerson(personIdtoRetrieve, "");
 
             results.Should().NotBeNull();
             results.Id.Should().Be(personIdtoRetrieve);
         }
 
         [Fact]
-        public void WhenPersonIdIsNotExistExistInTheDatabase_ShouldReturnNull()
+        public async Task WhenPersonIdIsNotExistExistInTheDatabase_ShouldReturnNull()
         {
-            var results = _sut.GetPerson(999, "");
+            var results = await _sut.GetPerson(999, "");
 
             results.Should().BeNull();
         }
 
         [Fact]
-        public void WhenInsertingAPerson_PersonEntityIsNotValid_ShouldThrowException()
+        public async Task WhenInsertingAPerson_PersonEntityIsNotValid_ShouldThrowException()
         {
-            _sut.Invoking(x => x.AddPerson(null)).Should().Throw<InvalidDataException>()
+            await _sut.Invoking(x => x.AddPerson(null)).Should().ThrowAsync<InvalidDataException>()
                 .WithMessage("Unable To Map To Person Entity");
         }
 
         [Fact]
-        public void WhenInsertingAPerson_PersonEntityIsSuccessfullyCalled_AddPersonMethodShouldBeCalledOnce()
+        public async Task WhenInsertingAPerson_PersonEntityIsSuccessfullyCalled_AddPersonMethodShouldBeCalledOnce()
         {
             var personForCreationDto = CreatePersonForCreationDto();
+            _personRepository.Setup(x => x.AddPerson(It.IsAny<Person>())).ReturnsAsync(GeneratePersons().FirstOrDefault);
 
-            _sut.AddPerson(personForCreationDto);
+            var result = await _sut.AddPerson(personForCreationDto);
 
             _personRepository.Verify(x => x.AddPerson(It.IsAny<Person>()), Times.Once);
         }
 
         [Fact]
-        public void WhenAPersonIsNotExist_WhenDeletingThePerson_Will_ReturnFalse()
+        public async Task WhenAPersonIsNotExist_WhenDeletingThePerson_Will_ReturnFalse()
         {
-            var result = _sut.DeletePerson(999);
+            var result = await _sut.DeletePerson(999);
 
             result.Should().BeFalse();
         }
 
 
         [Fact]
-        public void WhenAPersonIsExist_WhenDeletingThePerson_Will_ReturnTrue()
+        public async Task WhenAPersonIsExist_WhenDeletingThePerson_Will_ReturnTrue()
         {
             var person = GeneratePersons().First();
 
-            _personRepository.Setup(x => x.GetPerson(It.IsAny<int>())).Returns(person);
+            _personRepository.Setup(x => x.GetPerson(It.IsAny<int>())).ReturnsAsync(person);
 
-            var result = _sut.DeletePerson(person.Id);
+            var result = await _sut.DeletePerson(person.Id);
 
             _personRepository.Verify(x => x.DeletePerson(It.IsAny<Person>()), Times.Once);
             result.Should().BeTrue();
@@ -127,30 +129,26 @@ namespace TPICAP.TechChallenge.Infrastructure.Tests.Services
 
 
         [Fact]
-        public void WhenEntityIsAlreadyExist_ItShouldUpdateTheEntity()
+        public async Task WhenEntityIsAlreadyExist_ItShouldUpdateTheEntity()
         {
             var personForUpdateDto = CreatePersonForUpdateDto();
-            _personRepository.Setup(x => x.GetPerson(It.IsAny<int>())).Returns(GeneratePersons().First);
+            _personRepository.Setup(x => x.GetPerson(It.IsAny<int>())).ReturnsAsync(GeneratePersons().First);
 
-            var result = _sut.UpdatePerson(personForUpdateDto);
-
+            var result = await _sut.UpdatePerson(personForUpdateDto);
             _personRepository.Verify(x => x.AddPerson(It.IsAny<Person>()), Times.Once);
-            _personRepository.Verify(x => x.Save(), Times.Once);
-
             result.Should().NotBeNull();
         }
 
         [Fact]
-        public void WhenEntityIsNotExist_ItShouldCreateNewEntity()
+        public async Task WhenEntityIsNotExist_ItShouldCreateNewEntity()
         {
             var personForUpdateDto = CreatePersonForUpdateDto();
-            _personRepository.Setup(x => x.PersonExist(It.IsAny<int>())).Returns(true);
-            _personRepository.Setup(x => x.GetPerson(It.IsAny<int>())).Returns(GeneratePersons().First);
+            _personRepository.Setup(x => x.PersonExist(It.IsAny<int>())).ReturnsAsync(true);
+            _personRepository.Setup(x => x.GetPerson(It.IsAny<int>())).ReturnsAsync(GeneratePersons().First);
 
-            var result = _sut.UpdatePerson(personForUpdateDto);
+            var result = await _sut.UpdatePerson(personForUpdateDto);
 
             _personRepository.Verify(x => x.UpdatePerson(It.IsAny<Person>()), Times.Once);
-            _personRepository.Verify(x => x.Save(), Times.Once);
 
             result.Should().NotBeNull();
         }

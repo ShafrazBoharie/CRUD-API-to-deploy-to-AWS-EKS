@@ -1,4 +1,5 @@
-﻿using TPICAP.TechChallenge.Data.Entities;
+﻿using System.Threading.Tasks;
+using TPICAP.TechChallenge.Data.Entities;
 using TPICAP.TechChallenge.Data.Services;
 using TPICAP.TechChallenge.Model.Models;
 
@@ -13,7 +14,7 @@ namespace TPICAP.TechChallenge.Infrastructure.Mappers
             _salutationRepository = salutationRepository;
         }
 
-        public virtual Person Map(PersonForCreationDto personCreationDto)
+        public virtual async Task<Person> Map(PersonForCreationDto personCreationDto)
         {
             if (personCreationDto == null) return null;
 
@@ -22,7 +23,7 @@ namespace TPICAP.TechChallenge.Infrastructure.Mappers
                 FirstName = personCreationDto.FirstName,
                 LastName = personCreationDto.LastName,
                 DateOfBirth = personCreationDto.DOB,
-                Salutation = _salutationRepository.GetSalutationByName(personCreationDto.Salutation) ?? null
+                Salutation = await _salutationRepository.GetSalutationByName(personCreationDto.Salutation) ?? null
             };
         }
     }

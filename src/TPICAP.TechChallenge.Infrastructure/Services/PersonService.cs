@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using TPICAP.TechChallenge.Data.Services;
 using TPICAP.TechChallenge.Infrastructure.Helpers;
 using TPICAP.TechChallenge.Infrastructure.Mappers;
@@ -26,12 +27,12 @@ namespace TPICAP.TechChallenge.Infrastructure.Services
             _personUpdateDtoToPersonEntityMapper = personUpdateDtoToPersonEntityMapper;
         }
 
-        public PagedList<PersonDto> GetPersons(PersonsResourceParameters personsResourceParameters)
+        public async Task<PagedList<PersonDto>> GetPersons(PersonsResourceParameters personsResourceParameters)
         {
-            var personEntityCollection = _personRepository.GetPersons(personsResourceParameters.PageSize,
+            var personEntityCollection = (await _personRepository.GetPersons(personsResourceParameters.PageSize,
                 personsResourceParameters.PageNumber,
                 personsResourceParameters.IsAscending,
-                personsResourceParameters.OrderBy);
+                personsResourceParameters.OrderBy)).ToList();
 
             if (!personEntityCollection.Any()) return new PagedList<PersonDto>();
 
@@ -41,60 +42,57 @@ namespace TPICAP.TechChallenge.Infrastructure.Services
                 personsResourceParameters.PageSize);
         }
 
-        public PersonDto GetPerson(int personId, string fields)
+        public async Task<PersonDto> GetPerson(int personId, string fields)
         {
-            var personEntity = _personRepository.GetPerson(personId);
+            var personEntity =await _personRepository.GetPerson(personId);
 
             return _personEntityToPersonDtoMapper.Map(personEntity);
         }
 
-        public PersonDto AddPerson(PersonForCreationDto personForCreationDto)
+        public async Task<PersonDto> AddPerson(PersonForCreationDto personForCreationDto)
         {
-            var personEntity = _personCreationDtoToPersonEntityMapper.Map(personForCreationDto);
+            var personEntity = await _personCreationDtoToPersonEntityMapper.Map(personForCreationDto);
 
             if (personEntity == null) throw new InvalidDataException("Unable To Map To Person Entity");
 
-            _personRepository.AddPerson(personEntity);
-            _personRepository.Save();
+            var createdPerson = await _personRepository.AddPerson(personEntity);
 
-            return _personEntityToPersonDtoMapper.Map(personEntity);
+            return _personEntityToPersonDtoMapper.Map(createdPerson);
         }
 
-        public bool DeletePerson(int personId)
+        public async Task<bool> DeletePerson(int personId)
         {
-            var person = _personRepository.GetPerson(personId);
+            var person =await _personRepository.GetPerson(personId);
 
             if (person == null) return false;
 
-            _personRepository.DeletePerson(person);
-            _personRepository.Save();
+            await _personRepository.DeletePerson(person);
             return true;
         }
 
-        public PersonDto UpdatePerson(PersonForUpdateDto personForUpdateDto)
+        public async Task<PersonDto> UpdatePerson(PersonForUpdateDto personForUpdateDto)
         {
-            var entityToUpdate = _personUpdateDtoToPersonEntityMapper.Map(personForUpdateDto);
+            var entityToUpdate =await _personUpdateDtoToPersonEntityMapper.Map(personForUpdateDto);
 
-            if (!_personRepository.PersonExist(personForUpdateDto.Id))
+            if (!await _personRepository.PersonExist(personForUpdateDto.Id))
             {
                 if (entityToUpdate != null)
                 {
                     entityToUpdate.Id = 0;
-                    _personRepository.AddPerson(entityToUpdate);
-                    _personRepository.Save();
-                    return _personEntityToPersonDtoMapper.Map(_personRepository.GetPerson(entityToUpdate.Id));
+                    await _personRepository.AddPerson(entityToUpdate);
+
+                    return _personEntityToPersonDtoMapper.Map(await _personRepository.GetPerson(entityToUpdate.Id));
                 }
             }
             else
             {
                 if (entityToUpdate != null)
                 {
-                    _personRepository.UpdatePerson(entityToUpdate);
-                    _personRepository.Save();
-                    return _personEntityToPersonDtoMapper.Map(_personRepository.GetPerson(entityToUpdate.Id));
+                    await _personRepository.UpdatePerson(entityToUpdate);
+
+                    return _personEntityToPersonDtoMapper.Map(await _personRepository.GetPerson(entityToUpdate.Id));
                 }
             }
-
             return null;
         }
     }
