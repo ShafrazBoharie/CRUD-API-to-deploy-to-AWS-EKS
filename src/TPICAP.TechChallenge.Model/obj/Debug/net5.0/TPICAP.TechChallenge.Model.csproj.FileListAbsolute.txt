@@ -9,4 +9,3 @@ C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\
 C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\net5.0\TPICAP.TechChallenge.Model.dll
 C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\net5.0\ref\TPICAP.TechChallenge.Model.dll
 C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\net5.0\TPICAP.TechChallenge.Model.pdb
-C:\Users\shafr\source\repos\TPICAP.TechChallenge\src\TPICAP.TechChallenge.Model\obj\Debug\net5.0\TPICAP.TechChallenge.Model.csprojAssemblyReference.cache

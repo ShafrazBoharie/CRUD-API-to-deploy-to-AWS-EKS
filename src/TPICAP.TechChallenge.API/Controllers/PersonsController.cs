@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TPICAP.TechChallenge.Data.Services;
@@ -31,9 +32,9 @@ namespace TPICAP.TechChallenge.API.Controllers
         }
 
         [HttpGet(Name = "GetPersons")]
-        public IActionResult GetPersons([FromQuery] PersonsResourceParameters personsResourceParameters)
+        public async Task<IActionResult> GetPersons([FromQuery] PersonsResourceParameters personsResourceParameters)
         {
-            var persons = _personsService.GetPersons(personsResourceParameters);
+            var persons =await  _personsService.GetPersons(personsResourceParameters);
 
             var paginationMetadata = new
             {
@@ -77,7 +78,7 @@ namespace TPICAP.TechChallenge.API.Controllers
 
 
         [HttpGet("{personId}", Name = "GetPerson")]
-        public IActionResult GetPerson(int personId, string fields)
+        public async Task<IActionResult> GetPerson(int personId, string fields)
         {
             PersonDto person = null;
 
@@ -87,7 +88,7 @@ namespace TPICAP.TechChallenge.API.Controllers
 
             try
             {
-                person = _personsService.GetPerson(personId);
+                person =await  _personsService.GetPerson(personId);
             }
             catch
             {
@@ -107,12 +108,12 @@ namespace TPICAP.TechChallenge.API.Controllers
 
 
         [HttpPost(Name = "CreatePerson")]
-        public IActionResult CreatePerson(PersonForCreationDto person)
+        public async Task<IActionResult> CreatePerson(PersonForCreationDto person)
         {
             if (person == null) return BadRequest();
 
 
-            var personToReturn = _personsService.AddPerson(person);
+            var personToReturn =await  _personsService.AddPerson(person);
 
             var links = _hateoasLinksCreator.CreateLinksForPerson(Url.Link, personToReturn.Id, null);
 
@@ -125,7 +126,7 @@ namespace TPICAP.TechChallenge.API.Controllers
         }
 
         [HttpPut(Name = "UpdatePerson")]
-        public IActionResult UpdatePerson(PersonForUpdateDto person)
+        public async Task<IActionResult> UpdatePerson(PersonForUpdateDto person)
         {
             if (person == null) return BadRequest();
 
@@ -142,11 +143,11 @@ namespace TPICAP.TechChallenge.API.Controllers
         }
 
         [HttpDelete("{personId}", Name = "DeletePerson")]
-        public IActionResult DeletePerson(int personId)
+        public async Task<IActionResult> DeletePerson(int personId)
         {
-            if (personId <= 0 || _personsService.GetPerson(personId) == null) return NotFound();
+            if (personId <= 0 || await _personsService.GetPerson(personId) == null) return NotFound();
 
-            _personsService.DeletePerson(personId);
+            await _personsService.DeletePerson(personId);
 
             return NoContent();
         }
