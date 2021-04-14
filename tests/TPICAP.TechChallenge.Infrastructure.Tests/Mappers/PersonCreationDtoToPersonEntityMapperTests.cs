@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using System.Threading.Tasks;
+using Bogus;
 using FluentAssertions;
 using Moq;
 using TPICAP.TechChallenge.Data.Entities;
@@ -12,29 +13,32 @@ namespace TPICAP.TechChallenge.Infrastructure.Tests.Mappers
 {
     public class PersonCreationDtoToPersonEntityMapperTests
     {
-        private readonly PersonCreationDtoToPersonEntityMapper mapper;
-        private readonly Mock<ISalutationRepository> salutationRepo;
+        private readonly PersonCreationDtoToPersonEntityMapper _mapper;
+        private readonly Mock<ISalutationRepository> _salutationRepo;
 
         public PersonCreationDtoToPersonEntityMapperTests()
         {
-            salutationRepo = new Mock<ISalutationRepository>();
-            mapper = new PersonCreationDtoToPersonEntityMapper(salutationRepo.Object);
-            ConfigureSalutationMock();
+            _salutationRepo = new Mock<ISalutationRepository>();
+            _mapper = new PersonCreationDtoToPersonEntityMapper(_salutationRepo.Object);
         }
 
         [Fact]
-        public void ShouldMap_CreatePersonForCreationDto_To_PersonEntity()
+        public async Task ShouldMap_CreatePersonForCreationDto_To_PersonEntity()
         {
+            _salutationRepo.Setup(x => x.GetSalutationByName(It.IsAny<string>()))
+                .ReturnsAsync(new Salutation { SalutationName = "Mr", SalutationId = 1 });
+
             var personCreationDto = CreatePersonForCreationDto();
-            var result = mapper.Map(personCreationDto);
+
+            var result =await _mapper.Map(personCreationDto);
 
             result.Should().BeEquivalentTo(ExpectedResult(personCreationDto));
         }
 
         [Fact]
-        public void When_CreatePersonForCreationDto_Is_Null_ShouldReturn_Null()
+        public async Task When_CreatePersonForCreationDto_Is_Null_ShouldReturn_Null()
         {
-            var result = mapper.Map(null);
+            var result = await _mapper.Map(null);
             result.Should().BeNull();
         }
 
@@ -46,12 +50,6 @@ namespace TPICAP.TechChallenge.Infrastructure.Tests.Mappers
                 .RuleFor(x => x.DOB, x => x.Person.DateOfBirth)
                 .RuleFor(x => x.Salutation, "Mr")
                 .Generate();
-        }
-
-        private void ConfigureSalutationMock()
-        {
-            salutationRepo.Setup(x => x.GetSalutationByName(It.IsAny<string>()))
-                .Returns(new Salutation {SalutationId = 1, SalutationName = "Mr"});
         }
 
         private Person ExpectedResult(PersonForCreationDto dto)

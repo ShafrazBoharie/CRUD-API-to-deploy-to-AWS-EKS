@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Bogus;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -35,22 +36,22 @@ namespace TPICAP.TechChallenge.API.Tests.Controllers
         }
 
         [Fact]
-        public void ShouldReturnPersonsCollection()
+        public async Task ShouldReturnPersonsCollection()
         {
             var personResourceParameters = new PersonsResourceParameters();
 
             var personsCollection = PagedList<PersonDto>.Create(new Faker<PersonDto>().Generate(12), 1, 10);
 
-            _personService.Setup(x => x.GetPersons(It.IsAny<PersonsResourceParameters>())).Returns(personsCollection);
+            _personService.Setup(x => x.GetPersons(It.IsAny<PersonsResourceParameters>())).ReturnsAsync(personsCollection);
 
-            var result = _sut.GetPersons(personResourceParameters) as OkObjectResult;
+            var result = await _sut.GetPersons(personResourceParameters) as OkObjectResult;
 
             result.StatusCode.Should().Be(200);
             result.Should().NotBeNull();
         }
 
         [Fact]
-        public void ShouldReturnPersonsWhenIdIsExist_AndReturn_200()
+        public async Task ShouldReturnPersonsWhenIdIsExist_AndReturn_200()
         {
             var personResourceParameters = new PersonsResourceParameters();
             var person = new Faker<PersonDto>()
@@ -58,9 +59,9 @@ namespace TPICAP.TechChallenge.API.Tests.Controllers
                 .Generate();
 
             _propertyCheckService.Setup(x => x.TypeHasProperties<PersonDto>(It.IsAny<string>())).Returns(true);
-            _personService.Setup(x => x.GetPerson(It.IsAny<int>(), It.IsAny<string>())).Returns(person);
+            _personService.Setup(x => x.GetPerson(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(person);
 
-            var result = _sut.GetPerson(222, "") as OkObjectResult;
+            var result =await _sut.GetPerson(222, "") as OkObjectResult;
 
             result.StatusCode.Should().Be(200);
             result.Should().NotBeNull();
@@ -70,7 +71,7 @@ namespace TPICAP.TechChallenge.API.Tests.Controllers
         [Theory]
         [InlineData(221)]
         [InlineData(223)]
-        public void ShouldNotReturnPersonsWhenIdIsNotExist_andReturn404(int personIdToRetrieve)
+        public async Task ShouldNotReturnPersonsWhenIdIsNotExist_andReturn404(int personIdToRetrieve)
         {
             var personResourceParameters = new PersonsResourceParameters();
 
@@ -80,33 +81,33 @@ namespace TPICAP.TechChallenge.API.Tests.Controllers
 
             _propertyCheckService.Setup(x => x.TypeHasProperties<PersonDto>(It.IsAny<string>())).Returns(true);
 
-            var result = _sut.GetPerson(personIdToRetrieve, "").As<NotFoundResult>();
+            var result =(await _sut.GetPerson(personIdToRetrieve, "")).As<NotFoundResult>();
 
             result.StatusCode.Should().Be(404);
         }
 
         [Fact]
-        public void ShouldGetPersonHasFailure_GetPersonShouldReturnBadRequestError()
+        public async Task ShouldGetPersonHasFailure_GetPersonShouldReturnBadRequestError()
         {
             var personResourceParameters = new PersonsResourceParameters();
 
             _propertyCheckService.Setup(x => x.TypeHasProperties<PersonDto>(It.IsAny<string>())).Returns(true);
-            _personService.Setup(x => x.GetPerson(It.IsAny<int>(), It.IsAny<string>())).Throws(new Exception());
-            var result = _sut.GetPerson(222, "").As<BadRequestResult>();
+            _personService.Setup(x => x.GetPerson(It.IsAny<int>(), It.IsAny<string>())).ThrowsAsync(new Exception());
+            var result = (await _sut.GetPerson(222, "")).As<BadRequestResult>();
 
             result.StatusCode.Should().Be(400);
         }
 
         [Fact]
-        public void ShouldThrowBadRequest_WhenInsertingInvalidPerson()
+        public async Task ShouldThrowBadRequest_WhenInsertingInvalidPerson()
         {
-            var result = _sut.CreatePerson(null).As<BadRequestResult>();
+            var result =(await _sut.CreatePerson(null)).As<BadRequestResult>();
 
             result.StatusCode.Should().Be(400);
         }
 
         [Fact]
-        public void WhenInsertingValidPersonShouldReturn_204()
+        public async Task WhenInsertingValidPersonShouldReturn_204()
         {
             var person = new Faker<PersonForCreationDto>()
                 .Generate();
@@ -116,17 +117,17 @@ namespace TPICAP.TechChallenge.API.Tests.Controllers
                 , It.IsAny<string>())).Returns(new List<LinkDto>());
 
             _personService.Setup(x => x.AddPerson(It.IsAny<PersonForCreationDto>()))
-                .Returns(new Faker<PersonDto>().Generate());
+                .ReturnsAsync(new Faker<PersonDto>().Generate());
             var personResourceParameters = new PersonsResourceParameters();
 
-            var result = _sut.CreatePerson(person).As<CreatedAtRouteResult>();
+            var result = (await _sut.CreatePerson(person)).As<CreatedAtRouteResult>();
 
             result.StatusCode.Should().Be(201);
         }
 
 
         [Fact]
-        public void WhenUpdatingAPersonItShouldReturn_201()
+        public async Task WhenUpdatingAPersonItShouldReturn_201()
         {
             var person = new Faker<PersonForUpdateDto>()
                 .Generate();
@@ -136,26 +137,26 @@ namespace TPICAP.TechChallenge.API.Tests.Controllers
                 , It.IsAny<string>())).Returns(new List<LinkDto>());
 
             _personService.Setup(x => x.UpdatePerson(It.IsAny<PersonForUpdateDto>()))
-                .Returns(new Faker<PersonDto>().Generate());
+                .ReturnsAsync(new Faker<PersonDto>().Generate());
             var personResourceParameters = new PersonsResourceParameters();
 
-            var result = _sut.UpdatePerson(person).As<CreatedAtRouteResult>();
+            var result = (await _sut.UpdatePerson(person)).As<CreatedAtRouteResult>();
 
             result.StatusCode.Should().Be(201);
         }
 
         [Fact]
-        public void WhenDeletingAPersonItShouldReturn_NoContent()
+        public async Task WhenDeletingAPersonItShouldReturn_NoContent()
         {
             var person = new Faker<PersonForUpdateDto>()
                 .Generate();
 
             _propertyCheckService.Setup(x => x.TypeHasProperties<PersonDto>(It.IsAny<string>())).Returns(true);
-            _personService.Setup(x => x.GetPerson(It.IsAny<int>(), It.IsAny<string>())).Returns(new PersonDto());
+            _personService.Setup(x => x.GetPerson(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(new PersonDto());
 
             var personResourceParameters = new PersonsResourceParameters();
 
-            var result = _sut.DeletePerson(111).As<NoContentResult>();
+            var result = (await _sut.DeletePerson(111)).As<NoContentResult>();
 
             _personService.Verify(x => x.DeletePerson(It.IsAny<int>()), Times.Once);
 
@@ -163,9 +164,9 @@ namespace TPICAP.TechChallenge.API.Tests.Controllers
         }
 
         [Fact]
-        public void WhenDeletingAPersonPersonIdIsInvalid_BadRequest()
+        public async Task WhenDeletingAPersonPersonIdIsInvalid_BadRequest()
         {
-            var result = _sut.DeletePerson(-1).As<NotFoundResult>();
+            var result = (await _sut.DeletePerson(-1)).As<NotFoundResult>();
 
             result.StatusCode.Should().Be(404);
         }

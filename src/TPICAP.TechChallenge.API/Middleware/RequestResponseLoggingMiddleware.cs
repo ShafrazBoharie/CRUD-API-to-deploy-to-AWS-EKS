@@ -15,10 +15,10 @@ namespace TPICAP.TechChallenge.API.Middleware
         private readonly RequestDelegate _next;
 
         public RequestResponseLoggingMiddleware(RequestDelegate next,
-            ILogger<RequestResponseLoggingMiddleware> loggerFactory)
+            ILogger<RequestResponseLoggingMiddleware> logger)
         {
             _next = next;
-            _logger = loggerFactory;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TPICAP.TechChallenge.Data.Entities;
 
@@ -9,15 +10,13 @@ namespace TPICAP.TechChallenge.Data.Services
     public class PersonRepository : IPersonRepository
     {
         private readonly PeopleContext _context;
-        private readonly ISalutationRepository _salutationRepository;
 
         public PersonRepository(PeopleContext context, ISalutationRepository salutationRepository)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _salutationRepository = salutationRepository ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public IEnumerable<Person> GetPersons(int pageSize, int pageNumber, bool isAscending,
+        public async Task<IEnumerable<Person>> GetPersons(int pageSize, int pageNumber, bool isAscending,
             string orderBy = "LastName", string searchQuery = "")
         {
             var personCollection = _context.People.Include(x => x.Salutation) as IQueryable<Person>;
@@ -33,120 +32,119 @@ namespace TPICAP.TechChallenge.Data.Services
                 );
             }
 
+            personCollection = SoryPersonsCollection(isAscending, orderBy, personCollection);
+
+            return await personCollection.ToListAsync();
+        }
+        
+        public async Task<Person> GetPerson(int personId)
+        {
+            if (personId < 1) throw new ArgumentNullException(nameof(personId));
+
+            return await _context.People.Include(x => x.Salutation).FirstOrDefaultAsync(x => x.Id == personId);
+        }
+
+        public async Task<Person> AddPerson(Person person)
+        {
+            if (person == null) throw new ArgumentNullException(nameof(person));
+
+            _context.People.Add(person);
+            await _context.SaveChangesAsync();
+            return person;
+        }
+
+        public async Task DeletePerson(Person person)
+        {
+            if (person == null) throw new ArgumentNullException(nameof(person));
+            _context.People.Remove(person);
+            await _context.SaveChangesAsync();
+
+        }
+
+        public async Task<Person> UpdatePerson(Person person)
+        {
+            _context.Entry(person).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return person;
+        }
+
+        public async Task<bool> PersonExist(int personId)
+        {
+            return await _context.People.AnyAsync(x => x.Id == personId);
+        }
+
+        public async Task<bool> PersonExist(Person person)
+        {
+            if (person == null) throw new ArgumentNullException(nameof(person));
+
+            return await _context.People
+                .AnyAsync(x => x.FirstName == person.FirstName &&
+                          x.LastName == person.LastName &&
+                          x.DateOfBirth == person.DateOfBirth &&
+                          x.Salutation.SalutationId == person.Salutation.SalutationId);
+        }
+
+        public void Dispose()
+        {
+            _context?.Dispose();
+        }
+
+        private static IQueryable<Person> SoryPersonsCollection(bool isAscending, string orderBy, IQueryable<Person> personCollection)
+        {
             if (!string.IsNullOrWhiteSpace(orderBy))
             {
-                // TODO : Provide a IQueryableExtension
-                //PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(Person)).Find(orderBy, true);
-
-                //if (prop == null)
-                //{
-                //    throw new ArgumentNullException();
-                //}
-
                 if (isAscending)
                     switch (orderBy.ToLower())
                     {
                         case "lastname":
-                        {
-                            personCollection = personCollection.OrderBy(x => x.LastName);
-                            break;
-                        }
+                            {
+                                personCollection = personCollection.OrderBy(x => x.LastName);
+                                break;
+                            }
                         case "Dob":
-                        {
-                            personCollection = personCollection.OrderBy(x => x.DateOfBirth);
-                            break;
-                        }
+                            {
+                                personCollection = personCollection.OrderBy(x => x.DateOfBirth);
+                                break;
+                            }
                         case "salutation":
-                        {
-                            personCollection = personCollection.OrderBy(x => x.Salutation.SalutationName);
-                            break;
-                        }
+                            {
+                                personCollection = personCollection.OrderBy(x => x.Salutation.SalutationName);
+                                break;
+                            }
                         default:
-                        {
-                            personCollection = personCollection.OrderBy(x => x.LastName);
-                            break;
-                        }
+                            {
+                                personCollection = personCollection.OrderBy(x => x.LastName);
+                                break;
+                            }
                     }
                 else
                     switch (orderBy.ToLower())
                     {
                         case "lastname":
-                        {
-                            personCollection = personCollection.OrderByDescending(x => x.LastName);
-                            break;
-                        }
+                            {
+                                personCollection = personCollection.OrderByDescending(x => x.LastName);
+                                break;
+                            }
                         case "Dob":
-                        {
-                            personCollection = personCollection.OrderByDescending(x => x.DateOfBirth);
-                            break;
-                        }
+                            {
+                                personCollection = personCollection.OrderByDescending(x => x.DateOfBirth);
+                                break;
+                            }
                         case "salutation":
-                        {
-                            personCollection = personCollection.OrderByDescending(x => x.Salutation.SalutationName);
-                            break;
-                        }
+                            {
+                                personCollection = personCollection.OrderByDescending(x => x.Salutation.SalutationName);
+                                break;
+                            }
                         default:
-                        {
-                            personCollection = personCollection.OrderByDescending(x => x.LastName);
-                            break;
-                        }
+                            {
+                                personCollection = personCollection.OrderByDescending(x => x.LastName);
+                                break;
+                            }
                     }
             }
 
             return personCollection;
         }
 
-
-        public Person GetPerson(int personId)
-        {
-            if (personId < 1) throw new ArgumentNullException(nameof(personId));
-
-            return _context.People.Include(x => x.Salutation).FirstOrDefault(x => x.Id == personId);
-        }
-
-        public void AddPerson(Person person)
-        {
-            if (person == null) throw new ArgumentNullException(nameof(person));
-
-            _context.People.Add(person);
-        }
-
-        public void DeletePerson(Person person)
-        {
-            if (person == null) throw new ArgumentNullException(nameof(person));
-            _context.People.Remove(person);
-        }
-
-        public void UpdatePerson(Person person)
-        {
-            _context.Entry(person).State = EntityState.Modified;
-        }
-
-        public bool PersonExist(int personId)
-        {
-            return _context.People.Any(x => x.Id == personId);
-        }
-
-        public bool PersonExist(Person person)
-        {
-            if (person == null) throw new ArgumentNullException(nameof(person));
-
-            return _context.People
-                .Any(x => x.FirstName == person.FirstName &&
-                          x.LastName == person.LastName &&
-                          x.DateOfBirth == person.DateOfBirth &&
-                          x.Salutation.SalutationId == person.Salutation.SalutationId);
-        }
-
-        public bool Save()
-        {
-            return _context.SaveChanges() >= 0;
-        }
-
-
-        public void Dispose()
-        {
-            _context?.Dispose();
-        }
     }
 }

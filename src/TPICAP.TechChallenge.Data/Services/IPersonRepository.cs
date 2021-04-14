@@ -1,25 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TPICAP.TechChallenge.Data.Entities;
 
 namespace TPICAP.TechChallenge.Data.Services
 {
     public interface IPersonRepository
     {
-        IEnumerable<Person> GetPersons(int pageSize, int pageNumber, bool isAscending, string orderBy = "LastName", string searchQuery = "");
+        Task<IEnumerable<Person>> GetPersons(int pageSize, int pageNumber, bool isAscending, string orderBy = "LastName", string searchQuery = "");
 
-        Person GetPerson(int personId);
+        Task<Person> GetPerson(int personId);
 
-        void AddPerson(Person person);
+        Task<Person> AddPerson(Person person);
 
-        void DeletePerson(Person person);
+        Task DeletePerson(Person person);
 
-        void UpdatePerson(Person person);
+        Task<Person> UpdatePerson(Person person);
 
-        bool PersonExist(int personId);
+        Task<bool> PersonExist(int personId);
 
-        bool PersonExist(Person person);
-
-        bool Save();
+        Task<bool> PersonExist(Person person);
 
     }
 }

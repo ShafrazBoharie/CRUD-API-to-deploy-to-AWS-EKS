@@ -9,7 +9,7 @@ namespace TPICAP.TechChallenge.Infrastructure.Services
     {
         IEnumerable<LinkDto> CreateLinksForPerson(Func<string, object, string> urlLink, int personId, string fields);
 
-        IEnumerable<LinkDto> CreateLinksForPersons(Func<string, object, string> urlLink,
+        IEnumerable<LinkDto> CreateLinksForPersonsCollection(Func<string, object, string> urlLink,
             PersonsResourceParameters personsResourceParameters, bool hasNext, bool hasPrevious);
     }
 }
